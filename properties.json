@@ -1,0 +1,379 @@
+[
+  {
+    "namaProperti": "Menteng Royal Residence",
+    "image": "/assets/images/properties/menteng.jpg",
+    "gallery": [
+      "/assets/images/properties/menteng1.jpg",
+      "/assets/images/properties/menteng2.jpg"
+    ],
+    "video": "https://res.cloudinary.com/yourcloud/video/upload/v1234567890/menteng-tour.mp4",
+    "lokasi": {
+      "area": "Menteng",
+      "kota": "Jakarta Pusat",
+      "provinsi": "DKI Jakarta",
+      "alamatLengkap": "Jl. Cendana No. 1, Menteng, Jakarta Pusat"
+    },
+    "jumlahKamar": 4,
+    "jumlahKamarMandi": 5,
+    "jumlahLantai": 2,
+    "luasTanah": 300,
+    "luasBangunan": 500,
+    "tahunDibangun": 2018,
+    "sertifikat": "SHM",
+    "furnished": "Semi Furnished",
+    "arahBangunan": "Timur",
+    "listrik": "6600 VA",
+    "air": "PAM",
+    "harga": 25000000000,
+    "mataUang": "IDR",
+    "tipeProperti": "Rumah Mewah",
+    "tipeListing": "Dijual",
+    "deskripsi": "Rumah mewah 4 kamar tidur di kawasan elit Menteng, Jakarta.",
+    "fasilitas": [
+      "Kolam Renang",
+      "Garasi Luas",
+      "Keamanan 24 Jam",
+      "Taman Pribadi"
+    ],
+    "status": "Tersedia"
+  },
+  {
+    "namaProperti": "Pondok Indah Grand Estate",
+    "image": "/assets/images/properties/pondokindah.jpg",
+    "gallery": [
+      "/assets/images/properties/pondokindah1.jpg",
+      "/assets/images/properties/pondokindah2.jpg"
+    ],
+    "video": "https://res.cloudinary.com/yourcloud/video/upload/v1234567891/pondokindah-tour.mp4",
+    "lokasi": {
+      "area": "Pondok Indah",
+      "kota": "Jakarta Selatan",
+      "provinsi": "DKI Jakarta",
+      "alamatLengkap": "Jl. Metro Pondok Indah No. 8, Jakarta Selatan"
+    },
+    "jumlahKamar": 5,
+    "jumlahKamarMandi": 6,
+    "jumlahLantai": 3,
+    "luasTanah": 450,
+    "luasBangunan": 700,
+    "tahunDibangun": 2020,
+    "sertifikat": "SHM",
+    "furnished": "Fully Furnished",
+    "arahBangunan": "Barat",
+    "listrik": "7700 VA",
+    "air": "PAM",
+    "harga": 35000000000,
+    "mataUang": "IDR",
+    "tipeProperti": "Rumah Mewah",
+    "tipeListing": "Dijual",
+    "deskripsi": "Hunian mewah dengan fasilitas lengkap di Pondok Indah.",
+    "fasilitas": [
+      "Kolam Renang",
+      "Gym",
+      "Ruang Home Theater",
+      "Taman Belakang"
+    ],
+    "status": "Tersedia"
+  },
+  {
+    "namaProperti": "Kemang Modern Villa",
+    "image": "/assets/images/properties/kemang.jpg",
+    "gallery": [
+      "/assets/images/properties/kemang1.jpg",
+      "/assets/images/properties/kemang2.jpg"
+    ],
+    "video": "https://res.cloudinary.com/yourcloud/video/upload/v1234567892/kemang-tour.mp4",
+    "lokasi": {
+      "area": "Kemang",
+      "kota": "Jakarta Selatan",
+      "provinsi": "DKI Jakarta",
+      "alamatLengkap": "Jl. Kemang Raya No. 15, Jakarta Selatan"
+    },
+    "jumlahKamar": 3,
+    "jumlahKamarMandi": 4,
+    "jumlahLantai": 2,
+    "luasTanah": 250,
+    "luasBangunan": 400,
+    "tahunDibangun": 2017,
+    "sertifikat": "SHM",
+    "furnished": "Unfurnished",
+    "arahBangunan": "Selatan",
+    "listrik": "5500 VA",
+    "air": "Sumur Bor",
+    "harga": 18000000000,
+    "mataUang": "IDR",
+    "tipeProperti": "Rumah Mewah",
+    "tipeListing": "Dijual",
+    "deskripsi": "Rumah modern minimalis di kawasan strategis Kemang.",
+    "fasilitas": [
+      "Taman Pribadi",
+      "Garasi",
+      "Keamanan 24 Jam"
+    ],
+    "status": "Tersedia"
+  },
+  {
+    "namaProperti": "Pluit Ocean View Mansion",
+    "image": "/assets/images/properties/pluit.jpg",
+    "gallery": [
+      "/assets/images/properties/pluit1.jpg",
+      "/assets/images/properties/pluit2.jpg"
+    ],
+    "video": "https://res.cloudinary.com/yourcloud/video/upload/v1234567893/pluit-tour.mp4",
+    "lokasi": {
+      "area": "Pluit",
+      "kota": "Jakarta Utara",
+      "provinsi": "DKI Jakarta",
+      "alamatLengkap": "Jl. Pluit Selatan No. 22, Jakarta Utara"
+    },
+    "jumlahKamar": 6,
+    "jumlahKamarMandi": 7,
+    "jumlahLantai": 3,
+    "luasTanah": 600,
+    "luasBangunan": 900,
+    "tahunDibangun": 2021,
+    "sertifikat": "SHM",
+    "furnished": "Fully Furnished",
+    "arahBangunan": "Utara",
+    "listrik": "10600 VA",
+    "air": "PAM",
+    "harga": 42000000000,
+    "mataUang": "IDR",
+    "tipeProperti": "Rumah Mewah",
+    "tipeListing": "Dijual",
+    "deskripsi": "Rumah besar dengan pemandangan laut di Pluit.",
+    "fasilitas": [
+      "Kolam Renang",
+      "Sauna",
+      "Rooftop Garden",
+      "Garasi 4 Mobil"
+    ],
+    "status": "Tersedia"
+  },
+  {
+    "namaProperti": "BSD City Premier Home",
+    "image": "/assets/images/properties/bsd.jpg",
+    "gallery": [
+      "/assets/images/properties/bsd1.jpg",
+      "/assets/images/properties/bsd2.jpg"
+    ],
+    "video": "https://res.cloudinary.com/yourcloud/video/upload/v1234567894/bsd-tour.mp4",
+    "lokasi": {
+      "area": "BSD City",
+      "kota": "Tangerang Selatan",
+      "provinsi": "Banten",
+      "alamatLengkap": "Jl. BSD Boulevard No. 10, BSD City"
+    },
+    "jumlahKamar": 4,
+    "jumlahKamarMandi": 4,
+    "jumlahLantai": 2,
+    "luasTanah": 320,
+    "luasBangunan": 450,
+    "tahunDibangun": 2019,
+    "sertifikat": "SHM",
+    "furnished": "Semi Furnished",
+    "arahBangunan": "Barat Daya",
+    "listrik": "6600 VA",
+    "air": "PAM",
+    "harga": 16000000000,
+    "mataUang": "IDR",
+    "tipeProperti": "Rumah Mewah",
+    "tipeListing": "Dijual",
+    "deskripsi": "Rumah modern di kawasan premium BSD City.",
+    "fasilitas": [
+      "Taman",
+      "Garasi",
+      "Keamanan 24 Jam"
+    ],
+    "status": "Tersedia"
+  },
+  {
+    "namaProperti": "Pejaten Green Sanctuary",
+    "image": "/assets/images/properties/pejaten.jpg",
+    "gallery": [
+      "/assets/images/properties/pejaten1.jpg",
+      "/assets/images/properties/pejaten2.jpg"
+    ],
+    "video": "https://res.cloudinary.com/yourcloud/video/upload/v1234567895/pejaten-tour.mp4",
+    "lokasi": {
+      "area": "Pejaten",
+      "kota": "Jakarta Selatan",
+      "provinsi": "DKI Jakarta",
+      "alamatLengkap": "Jl. Pejaten Barat No. 5, Jakarta Selatan"
+    },
+    "jumlahKamar": 3,
+    "jumlahKamarMandi": 3,
+    "jumlahLantai": 2,
+    "luasTanah": 200,
+    "luasBangunan": 300,
+    "tahunDibangun": 2016,
+    "sertifikat": "SHM",
+    "furnished": "Unfurnished",
+    "arahBangunan": "Timur Laut",
+    "listrik": "4400 VA",
+    "air": "Sumur Bor",
+    "harga": 9500000000,
+    "mataUang": "IDR",
+    "tipeProperti": "Rumah Mewah",
+    "tipeListing": "Dijual",
+    "deskripsi": "Rumah asri di lingkungan tenang Pejaten.",
+    "fasilitas": [
+      "Taman",
+      "Garasi",
+      "Keamanan 24 Jam"
+    ],
+    "status": "Tersedia"
+  },
+  {
+    "namaProperti": "Kelapa Gading Business Residence",
+    "image": "/assets/images/properties/kelapagading.jpg",
+    "gallery": [
+      "/assets/images/properties/kelapagading1.jpg",
+      "/assets/images/properties/kelapagading2.jpg"
+    ],
+    "video": "https://res.cloudinary.com/yourcloud/video/upload/v1234567896/kelapagading-tour.mp4",
+    "lokasi": {
+      "area": "Kelapa Gading",
+      "kota": "Jakarta Utara",
+      "provinsi": "DKI Jakarta",
+      "alamatLengkap": "Jl. Boulevard Raya No. 88, Kelapa Gading, Jakarta Utara"
+    },
+    "jumlahKamar": 5,
+    "jumlahKamarMandi": 5,
+    "jumlahLantai": 3,
+    "luasTanah": 400,
+    "luasBangunan": 600,
+    "tahunDibangun": 2019,
+    "sertifikat": "SHM",
+    "furnished": "Semi Furnished",
+    "arahBangunan": "Barat Laut",
+    "listrik": "7700 VA",
+    "air": "PAM",
+    "harga": 22000000000,
+    "mataUang": "IDR",
+    "tipeProperti": "Rumah Mewah",
+    "tipeListing": "Dijual",
+    "deskripsi": "Rumah mewah di pusat bisnis Kelapa Gading.",
+    "fasilitas": [
+      "Kolam Renang",
+      "Garasi",
+      "Taman",
+      "Keamanan 24 Jam"
+    ],
+    "status": "Tersedia"
+  },
+  {
+    "namaProperti": "Cipete Urban Minimalist",
+    "image": "/assets/images/properties/cipete.jpg",
+    "gallery": [
+      "/assets/images/properties/cipete1.jpg",
+      "/assets/images/properties/cipete2.jpg"
+    ],
+    "video": "https://res.cloudinary.com/yourcloud/video/upload/v1234567897/cipete-tour.mp4",
+    "lokasi": {
+      "area": "Cipete",
+      "kota": "Jakarta Selatan",
+      "provinsi": "DKI Jakarta",
+      "alamatLengkap": "Jl. Cipete Raya No. 12, Jakarta Selatan"
+    },
+    "jumlahKamar": 4,
+    "jumlahKamarMandi": 4,
+    "jumlahLantai": 2,
+    "luasTanah": 280,
+    "luasBangunan": 350,
+    "tahunDibangun": 2015,
+    "sertifikat": "SHM",
+    "furnished": "Unfurnished",
+    "arahBangunan": "Selatan",
+    "listrik": "5500 VA",
+    "air": "PAM",
+    "harga": 12000000000,
+    "mataUang": "IDR",
+    "tipeProperti": "Rumah Mewah",
+    "tipeListing": "Dijual",
+    "deskripsi": "Rumah minimalis modern di Cipete, dekat MRT.",
+    "fasilitas": [
+      "Taman",
+      "Garasi",
+      "Keamanan 24 Jam"
+    ],
+    "status": "Tersedia"
+  },
+  {
+    "namaProperti": "Senopati Supreme Mansion",
+    "image": "/assets/images/properties/senopati.jpg",
+    "gallery": [
+      "/assets/images/properties/senopati1.jpg",
+      "/assets/images/properties/senopati2.jpg"
+    ],
+    "video": "https://res.cloudinary.com/yourcloud/video/upload/v1234567898/senopati-tour.mp4",
+    "lokasi": {
+      "area": "Senopati",
+      "kota": "Jakarta Selatan",
+      "provinsi": "DKI Jakarta",
+      "alamatLengkap": "Jl. Senopati No. 20, Jakarta Selatan"
+    },
+    "jumlahKamar": 5,
+    "jumlahKamarMandi": 6,
+    "jumlahLantai": 3,
+    "luasTanah": 500,
+    "luasBangunan": 800,
+    "tahunDibangun": 2022,
+    "sertifikat": "SHM",
+    "furnished": "Fully Furnished",
+    "arahBangunan": "Timur",
+    "listrik": "10600 VA",
+    "air": "PAM",
+    "harga": 48000000000,
+    "mataUang": "IDR",
+    "tipeProperti": "Rumah Mewah",
+    "tipeListing": "Dijual",
+    "deskripsi": "Rumah super mewah di kawasan Senopati, Jakarta Selatan.",
+    "fasilitas": [
+      "Kolam Renang",
+      "Gym",
+      "Sauna",
+      "Rooftop Garden"
+    ],
+    "status": "Tersedia"
+  },
+  {
+    "namaProperti": "PIK Seaside Palace",
+    "image": "/assets/images/properties/pik.jpg",
+    "gallery": [
+      "/assets/images/properties/pik1.jpg",
+      "/assets/images/properties/pik2.jpg"
+    ],
+    "video": "https://res.cloudinary.com/yourcloud/video/upload/v1234567899/pik-tour.mp4",
+    "lokasi": {
+      "area": "Pantai Indah Kapuk",
+      "kota": "Jakarta Utara",
+      "provinsi": "DKI Jakarta",
+      "alamatLengkap": "Jl. Pantai Indah Utara No. 3, Jakarta Utara"
+    },
+    "jumlahKamar": 6,
+    "jumlahKamarMandi": 7,
+    "jumlahLantai": 3,
+    "luasTanah": 650,
+    "luasBangunan": 1000,
+    "tahunDibangun": 2023,
+    "sertifikat": "SHM",
+    "furnished": "Fully Furnished",
+    "arahBangunan": "Barat",
+    "listrik": "13200 VA",
+    "air": "PAM",
+    "harga": 60000000000,
+    "mataUang": "IDR",
+    "tipeProperti": "Rumah Mewah",
+    "tipeListing": "Dijual",
+    "deskripsi": "Rumah mewah tepi laut di Pantai Indah Kapuk.",
+    "fasilitas": [
+      "Kolam Renang",
+      "Rooftop Garden",
+      "Gym",
+      "Sauna",
+      "Garasi 5 Mobil"
+    ],
+    "status": "Tersedia"
+  }
+]
