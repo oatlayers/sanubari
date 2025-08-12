@@ -56,7 +56,7 @@ const PropertySchema = new mongoose.Schema(
     furnished: {
       type: String,
       required: true,
-      enum: ["Unfurnished", "Semi Furnished", "Fully Furnished"], // Optional: restrict values
+      enum: ["Unfurnished", "Semi Furnished", "Fully Furnished"],
     },
     arahBangunan: {
       type: String,
@@ -86,7 +86,7 @@ const PropertySchema = new mongoose.Schema(
     tipeListing: {
       type: String,
       required: true,
-      enum: ["Dijual", "Disewa"], // Optional: restrict values
+      enum: ["Dijual", "Disewa"],
     },
     deskripsi: {
       type: String,
@@ -99,17 +99,23 @@ const PropertySchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ["Tersedia", "Terjual", "Disewa"], // Optional: restrict values
+      enum: ["Tersedia", "Terjual", "Disewa"],
       default: "Tersedia",
+    },
+
+    // --- Featured Property Flag ---
+    featured: {
+      type: Boolean,
+      default: false,
     },
   },
   {
     // --- Timestamps Configuration ---
-    // This automatically adds `createdAt` and `updatedAt` fields
     timestamps: true,
   },
 );
 
-const Property = mongoose.model("Property", PropertySchema);
+const Property =
+  mongoose.models.Property || mongoose.model("Property", PropertySchema);
 
 export default Property;

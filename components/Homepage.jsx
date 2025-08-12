@@ -3,13 +3,15 @@ import FeaturedProperties from "./FeaturedProperties";
 import RecentProperties from "./RecentProperties";
 import Link from "next/link";
 
-const Homepage = () => {
+// Accept session as a prop
+const Homepage = ({ featuredProperties, session }) => {
   return (
     <div className="flex min-h-screen flex-col">
       <div className="text-base-content text-center text-3xl">
         Properti Unggulan
       </div>
-      <FeaturedProperties />
+      {/* Pass both properties and session down */}
+      <FeaturedProperties properties={featuredProperties} session={session} />
       <div className="text-base-content text-center text-3xl">
         Properti Terbaru
       </div>

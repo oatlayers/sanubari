@@ -1,5 +1,5 @@
 import React from "react";
-import PropertyAddForm from "@/app/components/PropertyAddForm";
+import PropertyAddForm from "@/components/PropertyAddForm";
 
 const page = () => {
   return <PropertyAddForm />;

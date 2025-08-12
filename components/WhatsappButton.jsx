@@ -1,9 +1,9 @@
 import { MessageCircleHeart } from "lucide-react";
 
-export default function WhatsAppButton() {
-  const phone = "1234567890";
+export default function WhatsAppButton({ fullUrl }) {
+  const phone = process.env.PHONE;
   const message = encodeURIComponent(
-    "Halo, saya tertarik dengan properti ini.",
+    `Halo, saya tertarik dengan properti ini. Link: ${fullUrl}`,
   );
   const url = `https://wa.me/${phone}?text=${message}`;
 
@@ -24,7 +24,7 @@ export default function WhatsAppButton() {
           fontWeight: "bold",
         }}
       >
-        <MessageCircleHeart className="mr-2 inline" />
+        <MessageCircleHeart className="mr-2 mb-1 inline" />
         Kirim pesan lewat WA
       </a>
     </div>
