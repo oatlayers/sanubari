@@ -40,11 +40,11 @@ Todo list
 - [x] Integrate Cloudinary-hosted images into gallery
 - [x] Add Mapbox integration for property location
 - [x] Style and configure Mapbox map
-- [ ] Create contact form layout
-- [ ] Implement contact form submission logic
-- [ ] Create message form layout
-- [ ] Implement message form submission logic
-- [ ] Add form validation and error handling
+- [x] Create contact form layout
+- [x] Implement contact form submission logic
+- [x] Create message form layout
+- [x] Implement message form submission logic
+- [x] Add form validation and error handling
 
 ---
 

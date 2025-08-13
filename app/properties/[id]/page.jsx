@@ -1,3 +1,4 @@
+// app/properties/[id]/page.jsx
 import connectDB from "@/lib/database";
 import Property from "@/models/Property";
 import PropertyDetail from "@/components/PropertyDetail";

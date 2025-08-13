@@ -1,9 +1,10 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import addProperty from "@/app/actions/addProperty";
 
 export default function PropertyAddForm() {
   const formRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -14,29 +15,29 @@ export default function PropertyAddForm() {
     const formData = new FormData(form);
     const fileEntries = formData.getAll("images").filter((f) => f && f.name);
 
-    // If no files, submit directly to server action
-    if (fileEntries.length === 0) {
-      console.log("⚠️ No files to upload, calling server action directly");
+    // Use a guard to ensure uploading state always resets
+    try {
+      setUploading(true);
 
-      // Remove the onSubmit handler temporarily and submit
-      const originalOnSubmit = form.onsubmit;
-      form.onsubmit = null;
+      // If no files, call server action directly
+      if (fileEntries.length === 0) {
+        console.log("⚠️ No files to upload, calling server action directly");
 
-      // Create FormData and call server action directly
-      const finalFormData = new FormData(form);
-      try {
-        await addProperty(finalFormData);
-      } catch (error) {
-        console.error("Server action failed:", error);
-        alert("Failed to save property: " + error.message);
+        // Temporarily remove onsubmit to avoid double handling if the form
+        // has an action, then call the server action directly with FormData.
+        const originalOnSubmit = form.onsubmit;
+        try {
+          form.onsubmit = null;
+          const finalFormData = new FormData(form);
+          await addProperty(finalFormData);
+          console.log("✅ Server action completed successfully (no files)");
+        } finally {
+          form.onsubmit = originalOnSubmit;
+        }
+        return;
       }
 
-      // Restore handler
-      form.onsubmit = originalOnSubmit;
-      return;
-    }
-
-    try {
+      // Get signature for Cloudinary uploads
       const sigRes = await fetch("/api/cloudinary-signature", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -52,8 +53,11 @@ export default function PropertyAddForm() {
         throw new Error("Invalid signature response");
 
       const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      if (!cloudName) throw new Error("Missing Cloudinary cloud name");
+
       const uploadedUrls = [];
 
+      // Upload each file sequentially (could be parallelized if desired)
       for (const file of fileEntries) {
         const fd = new FormData();
         fd.append("file", file);
@@ -83,31 +87,18 @@ export default function PropertyAddForm() {
         console.log("✅ Uploaded:", uploadJson.secure_url);
       }
 
-      // Create new FormData with all form fields
+      // Replace file inputs with uploaded URLs and call server action
       const finalFormData = new FormData(form);
-
-      // Remove file entries (they're uploaded now)
       finalFormData.delete("images");
+      uploadedUrls.forEach((url) => finalFormData.append("images", url));
 
-      // Add uploaded URLs
-      uploadedUrls.forEach((url) => {
-        finalFormData.append("images", url);
-        console.log("➕ Added image URL to FormData:", url);
-      });
-
-      console.log("🚀 Calling server action directly...");
-
-      // Call server action directly instead of form submission
-      try {
-        await addProperty(finalFormData);
-        console.log("✅ Server action completed successfully");
-      } catch (error) {
-        console.error("❌ Server action failed:", error);
-        alert("Failed to save property: " + error.message);
-      }
-    } catch (err) {
-      console.error("💥 Upload failed:", err);
-      alert("Upload failed: " + (err.message || "unknown error"));
+      await addProperty(finalFormData);
+      console.log("✅ Server action completed successfully");
+    } catch (error) {
+      console.error("❌ Upload/save failed:", error);
+      alert("Upload/save failed: " + (error.message || error));
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -120,6 +111,7 @@ export default function PropertyAddForm() {
         action={addProperty}
         className="space-y-6"
         onSubmit={handleSubmit}
+        aria-busy={uploading}
       >
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
@@ -133,6 +125,7 @@ export default function PropertyAddForm() {
               id="namaProperti"
               name="namaProperti"
               required
+              disabled={uploading}
               className="input input-bordered w-full"
               placeholder="Contoh: Rumah Mewah di Jakarta"
             />
@@ -152,6 +145,7 @@ export default function PropertyAddForm() {
               accept="image/*"
               multiple
               required
+              disabled={uploading}
               className="file-input file-input-bordered w-full"
             />
           </div>
@@ -165,7 +159,9 @@ export default function PropertyAddForm() {
           >
             Galeri Foto
           </label>
-          <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 text-center hover:border-blue-500">
+          <div
+            className={`flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 text-center hover:border-blue-500 ${uploading ? "pointer-events-none opacity-60" : ""}`}
+          >
             <p className="mb-2 text-sm text-gray-500">
               Silakan klik untuk memilih gambar
             </p>
@@ -175,6 +171,7 @@ export default function PropertyAddForm() {
               name="images"
               accept="image/*"
               multiple
+              disabled={uploading}
               className="file-input file-input-bordered w-full max-w-xs"
             />
           </div>
@@ -190,13 +187,17 @@ export default function PropertyAddForm() {
             name="video"
             type="url"
             pattern="https?://(www\.)?(youtube\.com|youtu\.be)/.+"
+            disabled={uploading}
             className="input input-bordered w-full"
             placeholder="https://youtube.com/watch?v=xxxx"
           />
         </div>
 
         {/* Lokasi */}
-        <fieldset className="rounded-md border border-gray-300 p-4">
+        <fieldset
+          className="rounded-md border border-gray-300 p-4"
+          disabled={uploading}
+        >
           <legend className="text-lg font-medium">Lokasi</legend>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <input
@@ -239,6 +240,7 @@ export default function PropertyAddForm() {
             required
             min="1"
             placeholder="Jumlah Kamar"
+            disabled={uploading}
             className="input input-bordered w-full"
           />
           <input
@@ -248,6 +250,7 @@ export default function PropertyAddForm() {
             required
             min="1"
             placeholder="Jumlah Kamar Mandi"
+            disabled={uploading}
             className="input input-bordered w-full"
           />
           <input
@@ -257,6 +260,7 @@ export default function PropertyAddForm() {
             required
             min="1"
             placeholder="Jumlah Lantai"
+            disabled={uploading}
             className="input input-bordered w-full"
           />
           <input
@@ -266,6 +270,7 @@ export default function PropertyAddForm() {
             min="1"
             required
             placeholder="Luas Tanah (m²)"
+            disabled={uploading}
             className="input input-bordered w-full"
           />
           <input
@@ -275,6 +280,7 @@ export default function PropertyAddForm() {
             required
             min="1"
             placeholder="Luas Bangunan (m²)"
+            disabled={uploading}
             className="input input-bordered w-full"
           />
           <input
@@ -284,6 +290,7 @@ export default function PropertyAddForm() {
             required
             min="1"
             placeholder="Tahun Dibangun"
+            disabled={uploading}
             className="input input-bordered w-full"
           />
           <input
@@ -291,6 +298,7 @@ export default function PropertyAddForm() {
             name="sertifikat"
             required
             placeholder="Sertifikat"
+            disabled={uploading}
             className="input input-bordered w-full"
           />
           <input
@@ -298,6 +306,7 @@ export default function PropertyAddForm() {
             name="arahBangunan"
             required
             placeholder="Arah Bangunan"
+            disabled={uploading}
             className="input input-bordered w-full"
           />
           <input
@@ -306,6 +315,7 @@ export default function PropertyAddForm() {
             required
             min="1"
             placeholder="Listrik"
+            disabled={uploading}
             className="input input-bordered w-full"
           />
           <input
@@ -313,6 +323,7 @@ export default function PropertyAddForm() {
             name="air"
             required
             placeholder="Air"
+            disabled={uploading}
             className="input input-bordered w-full"
           />
         </div>
@@ -328,6 +339,7 @@ export default function PropertyAddForm() {
             type="number"
             min="1"
             required
+            disabled={uploading}
             className="input input-bordered w-full"
             placeholder="Contoh: 2500000000"
           />
@@ -339,6 +351,7 @@ export default function PropertyAddForm() {
             id="tipeProperti"
             name="tipeProperti"
             required
+            disabled={uploading}
             className="select select-bordered w-full"
           >
             <option value="">Pilih Tipe Properti</option>
@@ -352,6 +365,7 @@ export default function PropertyAddForm() {
             id="tipeListing"
             name="tipeListing"
             required
+            disabled={uploading}
             className="select select-bordered w-full"
           >
             <option value="">Pilih Tipe Listing</option>
@@ -362,6 +376,7 @@ export default function PropertyAddForm() {
             id="status"
             name="status"
             defaultValue="Tersedia"
+            disabled={uploading}
             className="select select-bordered w-full"
           >
             <option value="Tersedia">Tersedia</option>
@@ -375,6 +390,7 @@ export default function PropertyAddForm() {
           id="furnished"
           name="furnished"
           required
+          disabled={uploading}
           className="select select-bordered w-full"
         >
           <option value="">Pilih Furnishing</option>
@@ -390,6 +406,7 @@ export default function PropertyAddForm() {
           required
           rows="4"
           placeholder="Deskripsi Properti"
+          disabled={uploading}
           className="textarea textarea-bordered w-full"
         />
 
@@ -422,6 +439,7 @@ export default function PropertyAddForm() {
                   type="checkbox"
                   name="fasilitas"
                   value={facility}
+                  disabled={uploading}
                   className="checkbox"
                 />
                 <span className="text-sm">{facility}</span>
@@ -432,8 +450,13 @@ export default function PropertyAddForm() {
 
         {/* Submit */}
         <div className="flex justify-end">
-          <button type="submit" className="btn btn-primary rounded-full">
-            Tambah Properti
+          <button
+            type="submit"
+            className={`btn btn-primary rounded-full ${uploading ? "opacity-80" : ""}`}
+            disabled={uploading}
+            aria-disabled={uploading}
+          >
+            {uploading ? "⏳ Menambah Properti..." : "Tambah Properti"}
           </button>
         </div>
       </form>

@@ -1,17 +1,28 @@
 import { MessageCircleHeart } from "lucide-react";
 
-export default function WhatsAppButton({ fullUrl }) {
-  const phone = process.env.PHONE;
-  const message = encodeURIComponent(
-    `Halo, saya tertarik dengan properti ini. Link: ${fullUrl}`,
-  );
-  const url = `https://wa.me/${phone}?text=${message}`;
+export default function WhatsAppButton({ fullUrl, form, type = "direct" }) {
+  const phone = process.env.NEXT_PUBLIC_PHONE_NUMBER;
+
+  let urlMessage = "";
+
+  if (type === "form" && form) {
+    const name = form?.name || "";
+    const message = form?.message || "";
+    urlMessage = encodeURIComponent(
+      `Nama: ${name}. ${message ? message : ""} Link Properti: ${fullUrl}`,
+    );
+  } else {
+    urlMessage = encodeURIComponent(
+      `Halo, saya tertarik dengan properti ini. Link Properti: ${fullUrl}`,
+    );
+  }
+
+  const sendUrl = `https://wa.me/${phone}?text=${urlMessage}`;
 
   return (
     <div className="flex flex-row items-center justify-center">
-      {" "}
       <a
-        href={url}
+        href={sendUrl}
         target="_blank"
         rel="noopener noreferrer"
         style={{
@@ -25,7 +36,7 @@ export default function WhatsAppButton({ fullUrl }) {
         }}
       >
         <MessageCircleHeart className="mr-2 mb-1 inline" />
-        Kirim pesan lewat WA
+        {type == "direct" ? "Hubungi lewat WA" : "Kirim pesan lewat WA"}
       </a>
     </div>
   );

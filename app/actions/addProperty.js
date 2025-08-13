@@ -2,7 +2,6 @@
 import connectDB from "@/lib/database";
 import Property from "@/models/Property";
 import { auth } from "@/auth";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 async function addProperty(formData) {
@@ -69,12 +68,12 @@ async function addProperty(formData) {
     const newProperty = new Property(propertyData);
     const savedProperty = await newProperty.save();
     savedPropertyId = savedProperty._id;
+    console.log(savedPropertyId);
   } catch (error) {
     console.error("Error saving property:", error.message);
   }
 
-  revalidatePath("/", "layout");
-  redirect(`/properties/${savedPropertyId}`);
+  // redirect(`/properties/${savedPropertyId}`);
 }
 
 export default addProperty;

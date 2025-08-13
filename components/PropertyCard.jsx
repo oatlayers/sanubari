@@ -13,6 +13,7 @@ import {
   Pointer,
   MapPinHouse,
   NotebookPen,
+  Calendar,
 } from "lucide-react";
 import DeleteButton from "./DeleteButton";
 import FeatureButton from "./FeatureButton";
@@ -26,6 +27,7 @@ const PropertyCard = (props) => {
     jumlahKamar = 0,
     jumlahKamarMandi = 0,
     luasTanah = 0,
+    tahunDibangun,
     luasBangunan = 0,
     sertifikat = "N/A",
     listrik = "N/A",
@@ -76,6 +78,11 @@ const PropertyCard = (props) => {
           </div>
 
           <div className="flex items-center gap-2">
+            <Calendar size={18} className="flex-shrink-0" />
+            <span>Tahun {tahunDibangun}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
             <DoorClosed size={18} className="flex-shrink-0" />
             <span>{jumlahKamar} Kamar Tidur</span>
           </div>
@@ -119,6 +126,13 @@ const PropertyCard = (props) => {
 
           {session && (
             <>
+              <Link
+                href={`/properties/${_id}`}
+                className="btn btn-secondary items-center rounded-xl"
+              >
+                <Pointer />
+                Lihat
+              </Link>
               <Link
                 href={`/properties/edit/${_id}`}
                 className="btn btn-primary items-center rounded-xl"
