@@ -1,4 +1,5 @@
 "use client";
+
 import { useRef, useState } from "react";
 import addProperty from "@/app/actions/addProperty";
 
@@ -15,29 +16,16 @@ export default function PropertyAddForm() {
     const formData = new FormData(form);
     const fileEntries = formData.getAll("images").filter((f) => f && f.name);
 
-    // Use a guard to ensure uploading state always resets
     try {
       setUploading(true);
 
-      // If no files, call server action directly
       if (fileEntries.length === 0) {
-        console.log("⚠️ No files to upload, calling server action directly");
-
-        // Temporarily remove onsubmit to avoid double handling if the form
-        // has an action, then call the server action directly with FormData.
-        const originalOnSubmit = form.onsubmit;
-        try {
-          form.onsubmit = null;
-          const finalFormData = new FormData(form);
-          await addProperty(finalFormData);
-          console.log("✅ Server action completed successfully (no files)");
-        } finally {
-          form.onsubmit = originalOnSubmit;
-        }
+        const finalFormData = new FormData(form);
+        await addProperty(finalFormData);
+        // If addProperty calls redirect, control will not reach here.
         return;
       }
 
-      // Get signature for Cloudinary uploads
       const sigRes = await fetch("/api/cloudinary-signature", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -57,7 +45,6 @@ export default function PropertyAddForm() {
 
       const uploadedUrls = [];
 
-      // Upload each file sequentially (could be parallelized if desired)
       for (const file of fileEntries) {
         const fd = new FormData();
         fd.append("file", file);
@@ -84,17 +71,24 @@ export default function PropertyAddForm() {
           throw new Error("No secure_url from Cloudinary");
 
         uploadedUrls.push(uploadJson.secure_url);
-        console.log("✅ Uploaded:", uploadJson.secure_url);
       }
 
-      // Replace file inputs with uploaded URLs and call server action
       const finalFormData = new FormData(form);
       finalFormData.delete("images");
       uploadedUrls.forEach((url) => finalFormData.append("images", url));
 
       await addProperty(finalFormData);
-      console.log("✅ Server action completed successfully");
+      // If addProperty calls redirect, control will not reach here.
     } catch (error) {
+      // IMPORTANT: allow Next.js redirect to proceed
+      if (
+        error?.digest === "NEXT_REDIRECT" ||
+        (typeof error?.message === "string" &&
+          error.message.includes("NEXT_REDIRECT"))
+      ) {
+        throw error;
+      }
+
       console.error("❌ Upload/save failed:", error);
       alert("Upload/save failed: " + (error.message || error));
     } finally {
@@ -151,7 +145,6 @@ export default function PropertyAddForm() {
           </div>
         </div>
 
-        {/* Gallery Upload */}
         <div>
           <label
             htmlFor="galleryImages"
@@ -177,7 +170,6 @@ export default function PropertyAddForm() {
           </div>
         </div>
 
-        {/* Video */}
         <div>
           <label htmlFor="video" className="mb-1 block text-sm font-medium">
             URL Video YouTube
@@ -193,7 +185,6 @@ export default function PropertyAddForm() {
           />
         </div>
 
-        {/* Lokasi */}
         <fieldset
           className="rounded-md border border-gray-300 p-4"
           disabled={uploading}
@@ -231,7 +222,6 @@ export default function PropertyAddForm() {
           </div>
         </fieldset>
 
-        {/* Detail Properti */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <input
             id="jumlahKamar"
@@ -328,7 +318,6 @@ export default function PropertyAddForm() {
           />
         </div>
 
-        {/* Harga */}
         <div>
           <label htmlFor="harga" className="mb-1 block text-sm font-medium">
             Harga (IDR) *
@@ -345,7 +334,6 @@ export default function PropertyAddForm() {
           />
         </div>
 
-        {/* Tipe Properti & Listing */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <select
             id="tipeProperti"
@@ -385,7 +373,6 @@ export default function PropertyAddForm() {
           </select>
         </div>
 
-        {/* Furnished */}
         <select
           id="furnished"
           name="furnished"
@@ -399,7 +386,6 @@ export default function PropertyAddForm() {
           <option value="Fully Furnished">Fully Furnished</option>
         </select>
 
-        {/* Deskripsi */}
         <textarea
           id="deskripsi"
           name="deskripsi"
@@ -410,7 +396,6 @@ export default function PropertyAddForm() {
           className="textarea textarea-bordered w-full"
         />
 
-        {/* Fasilitas */}
         <div>
           <label className="mb-1 block text-sm font-medium">Fasilitas</label>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
@@ -448,7 +433,6 @@ export default function PropertyAddForm() {
           </div>
         </div>
 
-        {/* Submit */}
         <div className="flex justify-end">
           <button
             type="submit"

@@ -36,7 +36,7 @@ Todo list
 
 - [x] Create page layout for individual property
 - [x] Fix example image display issue
-- [ ] Implement image gallery component
+- [x] Implement image gallery component
 - [x] Integrate Cloudinary-hosted images into gallery
 - [x] Add Mapbox integration for property location
 - [x] Style and configure Mapbox map
@@ -64,7 +64,7 @@ Todo list
 - [x] Implement navigation link back to homepage
 - [x] Create loading skeleton component for property cards
 - [x] Integrate loading skeleton into property list pages
-- [ ] Make sure all owner routes are blocked from public acess
+- [x] Make sure all owner routes are blocked from public acess
 
 ---
 

@@ -2,6 +2,7 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ToastProvider from "@/components/ToastProvider";
+import "leaflet/dist/leaflet.css";
 
 export const metadata = {
   title: "Sanubari Property | Cari Properti di Jogja",

@@ -38,6 +38,29 @@ const PropertyCard = (props) => {
     session,
   } = props;
 
+  const formatRupiahUnit = (value) => {
+    if (value == null || Number.isNaN(Number(value))) return "-";
+    const n = Number(value);
+
+    const juta = 1_000_000;
+    const miliar = 1_000_000_000;
+
+    // < 1 juta: show with regular grouping
+    if (n < juta) {
+      return n.toLocaleString("id-ID");
+    }
+
+    // >= 1 miliar: show in miliar with up to 1 decimal (no trailing .0)
+    if (n >= miliar) {
+      const v = +(n / miliar).toFixed(1);
+      return `${v % 1 === 0 ? v.toFixed(0) : v} miliar`;
+    }
+
+    // >= 1 juta and < 1 miliar: show in juta
+    const v = +(n / juta).toFixed(1);
+    return `${v % 1 === 0 ? v.toFixed(0) : v} juta`;
+  };
+
   return (
     <div className="card bg-base-100 w-auto shadow-sm">
       <figure className="flex max-h-64 w-full items-center justify-center overflow-hidden">
@@ -109,7 +132,7 @@ const PropertyCard = (props) => {
 
           <div className="flex items-center gap-2">
             <Banknote size={18} className="flex-shrink-0" />
-            <span>Rp {harga.toLocaleString()}</span>
+            <span className="break-words">Rp {formatRupiahUnit(harga)}</span>
           </div>
         </div>
 

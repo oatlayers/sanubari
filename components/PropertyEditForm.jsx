@@ -1,16 +1,29 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import updateProperty from "@/app/actions/updateProperty";
 
 const PropertyEditForm = ({ property }) => {
   const action = updateProperty.bind(null, property._id);
+  const [replaceMain, setReplaceMain] = useState(false);
+
+  function handleMainChange(e) {
+    const hasFiles = e?.target?.files?.length > 0;
+    setReplaceMain(Boolean(hasFiles));
+  }
 
   return (
     <div className="mx-auto max-w-4xl p-6">
       <h1 className="mb-6 text-3xl font-bold">Edit Properti</h1>
 
       <form className="space-y-6" action={action}>
+        {/* Hidden signal so server knows if main image is being replaced */}
+        <input
+          type="hidden"
+          name="replaceMain"
+          value={replaceMain ? "1" : "0"}
+        />
+
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
             <label
@@ -43,6 +56,7 @@ const PropertyEditForm = ({ property }) => {
               accept="image/*"
               multiple
               className="file-input file-input-bordered w-full"
+              onChange={handleMainChange}
             />
             <p className="mt-1 text-xs text-gray-500">
               Biarkan kosong untuk mempertahankan gambar yang ada.
@@ -50,7 +64,6 @@ const PropertyEditForm = ({ property }) => {
           </div>
         </div>
 
-        {/* Gallery Upload */}
         <div>
           <label
             htmlFor="galleryImages"
@@ -73,7 +86,6 @@ const PropertyEditForm = ({ property }) => {
           </div>
         </div>
 
-        {/* Video */}
         <div>
           <label htmlFor="video" className="mb-1 block text-sm font-medium">
             URL Video YouTube
@@ -89,7 +101,6 @@ const PropertyEditForm = ({ property }) => {
           />
         </div>
 
-        {/* Lokasi */}
         <fieldset className="rounded-md border border-gray-300 p-4">
           <legend className="text-lg font-medium">Lokasi</legend>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -128,7 +139,6 @@ const PropertyEditForm = ({ property }) => {
           </div>
         </fieldset>
 
-        {/* Detail Properti */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <input
             id="jumlahKamar"
@@ -225,7 +235,6 @@ const PropertyEditForm = ({ property }) => {
           />
         </div>
 
-        {/* Harga */}
         <div>
           <label htmlFor="harga" className="mb-1 block text-sm font-medium">
             Harga (IDR) *
@@ -242,7 +251,6 @@ const PropertyEditForm = ({ property }) => {
           />
         </div>
 
-        {/* Tipe Properti & Listing */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <select
             id="tipeProperti"
@@ -281,7 +289,6 @@ const PropertyEditForm = ({ property }) => {
           </select>
         </div>
 
-        {/* Furnished */}
         <select
           id="furnished"
           name="furnished"
@@ -295,7 +302,6 @@ const PropertyEditForm = ({ property }) => {
           <option value="Fully Furnished">Fully Furnished</option>
         </select>
 
-        {/* Deskripsi */}
         <textarea
           id="deskripsi"
           name="deskripsi"
@@ -306,7 +312,6 @@ const PropertyEditForm = ({ property }) => {
           defaultValue={property.deskripsi || ""}
         />
 
-        {/* Fasilitas */}
         <div>
           <label className="mb-1 block text-sm font-medium">Fasilitas</label>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
@@ -349,7 +354,6 @@ const PropertyEditForm = ({ property }) => {
           </div>
         </div>
 
-        {/* Submit */}
         <div className="flex justify-end">
           <button type="submit" className="btn btn-primary rounded-full">
             Simpan Perubahan

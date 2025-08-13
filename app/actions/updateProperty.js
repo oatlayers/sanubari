@@ -6,6 +6,63 @@ import Property from "@/models/Property";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import cloudinary from "@/lib/cloudinary";
+
+/**
+ * Upload a File from FormData to Cloudinary.
+ * @param {File} file
+ * @returns {Promise<any>}
+ */
+async function uploadFileToCloudinary(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: "sanubari",
+        resource_type: "image",
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      },
+    );
+    stream.end(buffer);
+  });
+}
+
+/**
+ * Collect new image URLs from FormData (strings or Files).
+ * @param {FormData} formData
+ * @returns {Promise<string[]>}
+ */
+async function collectNewImageUrls(formData) {
+  const entries = formData.getAll("images") || [];
+  const urls = [];
+
+  for (const entry of entries) {
+    if (!entry) continue;
+
+    if (typeof entry === "string") {
+      if (entry.startsWith("http")) {
+        urls.push(entry);
+      }
+      continue;
+    }
+
+    if (typeof entry === "object" && typeof entry.arrayBuffer === "function") {
+      if (entry.size && entry.size > 0) {
+        const uploaded = await uploadFileToCloudinary(entry);
+        if (uploaded?.secure_url) {
+          urls.push(uploaded.secure_url);
+        }
+      }
+    }
+  }
+
+  return urls;
+}
 
 export default async function updateProperty(propertyId, formData) {
   await connectDB();
@@ -20,22 +77,13 @@ export default async function updateProperty(propertyId, formData) {
     throw new Error("User identification failed");
   }
 
-  // Gather image entries (string URLs). Client should upload files to Cloudinary
-  // and then append the returned secure URLs as "images" fields.
-  const rawImages = formData.getAll("images") || [];
-  const imageUrls = [];
-
-  for (const entry of rawImages) {
-    if (!entry) continue;
-    if (typeof entry === "string" && entry.startsWith("http")) {
-      imageUrls.push(entry);
-    }
-    // ignore non-http strings or file objects; your client should send URLs
+  const existing = await Property.findById(propertyId).lean();
+  if (!existing) {
+    throw new Error("Property not found");
   }
 
   const amenities = formData.getAll("fasilitas") || [];
 
-  // Build update object (fields to set)
   const propertyData = {
     namaProperti: formData.get("namaProperti") || "",
     video: formData.get("video") || "",
@@ -45,18 +93,20 @@ export default async function updateProperty(propertyId, formData) {
       provinsi: formData.get("provinsi") || "",
       alamatLengkap: formData.get("alamatLengkap") || "",
     },
-    jumlahKamar: parseInt(formData.get("jumlahKamar")) || 1,
-    jumlahKamarMandi: parseInt(formData.get("jumlahKamarMandi")) || 1,
-    jumlahLantai: parseInt(formData.get("jumlahLantai")) || 1,
-    luasTanah: parseInt(formData.get("luasTanah")) || 1,
-    luasBangunan: parseInt(formData.get("luasBangunan")) || 1,
+    jumlahKamar: parseInt(formData.get("jumlahKamar") || "1", 10) || 1,
+    jumlahKamarMandi:
+      parseInt(formData.get("jumlahKamarMandi") || "1", 10) || 1,
+    jumlahLantai: parseInt(formData.get("jumlahLantai") || "1", 10) || 1,
+    luasTanah: parseInt(formData.get("luasTanah") || "1", 10) || 1,
+    luasBangunan: parseInt(formData.get("luasBangunan") || "1", 10) || 1,
     tahunDibangun:
-      parseInt(formData.get("tahunDibangun")) || new Date().getFullYear(),
+      parseInt(formData.get("tahunDibangun") || "", 10) ||
+      new Date().getFullYear(),
     sertifikat: formData.get("sertifikat") || "",
     arahBangunan: formData.get("arahBangunan") || "",
     listrik: formData.get("listrik") || "",
     air: formData.get("air") || "",
-    harga: parseInt(formData.get("harga")) || 1,
+    harga: parseInt(formData.get("harga") || "1", 10) || 1,
     mataUang: "IDR",
     tipeProperti: formData.get("tipeProperti") || "",
     tipeListing: formData.get("tipeListing") || "",
@@ -66,20 +116,34 @@ export default async function updateProperty(propertyId, formData) {
     fasilitas: amenities,
   };
 
-  // Find existing property to preserve images when client didn't send new ones
-  const existing = await Property.findById(propertyId).lean();
-  if (!existing) {
-    throw new Error("Property not found");
-  }
+  // New images (URLs or Files)
+  const newUrls = await collectNewImageUrls(formData);
+  const replaceMain = formData.get("replaceMain") === "1";
 
-  if (imageUrls.length > 0) {
-    // Replace images: first URL is main image, rest are gallery
-    propertyData.image = imageUrls[0] || "";
-    propertyData.gallery = imageUrls.slice(1);
-  } else {
-    // Preserve existing images if the client didn't submit new URLs
+  if (newUrls.length === 0) {
+    // No new images: preserve existing
     propertyData.image = existing.image || "";
-    propertyData.gallery = existing.gallery || [];
+    propertyData.gallery = Array.isArray(existing.gallery)
+      ? existing.gallery
+      : [];
+  } else {
+    if (replaceMain) {
+      // Replace main with the first new, append rest to gallery
+      const first = newUrls[0] || "";
+      const rest = newUrls.slice(1);
+      propertyData.image = first || existing.image || "";
+      propertyData.gallery = [
+        ...(Array.isArray(existing.gallery) ? existing.gallery : []),
+        ...rest,
+      ];
+    } else {
+      // Only add to gallery; keep main unchanged
+      propertyData.image = existing.image || "";
+      propertyData.gallery = [
+        ...(Array.isArray(existing.gallery) ? existing.gallery : []),
+        ...newUrls,
+      ];
+    }
   }
 
   const updatedProperty = await Property.findByIdAndUpdate(
@@ -92,7 +156,13 @@ export default async function updateProperty(propertyId, formData) {
     throw new Error("Failed to update property");
   }
 
-  // Revalidate homepage and redirect to updated property
-  revalidatePath("/");
+  try {
+    revalidatePath("/");
+    revalidatePath("/properties");
+    revalidatePath(`/properties/${updatedProperty._id}`);
+  } catch (err) {
+    console.error("revalidatePath failed:", err);
+  }
+
   redirect(`/properties/${updatedProperty._id}`);
 }
