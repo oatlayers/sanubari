@@ -14,6 +14,7 @@ import {
   Calendar,
 } from "lucide-react";
 import WhatsAppButton from "./WhatsappButton";
+import PropertyGallery from "./PropertyGallery";
 
 export default function PropertyDetail({ property }) {
   if (!property) return null;
@@ -39,7 +40,6 @@ export default function PropertyDetail({ property }) {
 
   const galleryItems =
     gallery && gallery.length ? gallery : image ? [image] : [];
-  const [active, setActive] = useState(0);
   const [form, setForm] = useState({ name: "", message: "" });
 
   const handleChange = (e) =>
@@ -52,18 +52,15 @@ export default function PropertyDetail({ property }) {
     const juta = 1_000_000;
     const miliar = 1_000_000_000;
 
-    // < 1 juta: show with regular grouping
     if (n < juta) {
       return n.toLocaleString("id-ID");
     }
 
-    // >= 1 miliar: show in miliar with up to 1 decimal (no trailing .0)
     if (n >= miliar) {
       const v = +(n / miliar).toFixed(1);
       return `${v % 1 === 0 ? v.toFixed(0) : v} miliar`;
     }
 
-    // >= 1 juta and < 1 miliar: show in juta
     const v = +(n / juta).toFixed(1);
     return `${v % 1 === 0 ? v.toFixed(0) : v} juta`;
   };
@@ -79,43 +76,9 @@ export default function PropertyDetail({ property }) {
         </p>
       </div>
 
-      {/* Gallery */}
-      <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="col-span-2">
-          <div className="border-base-300 bg-base-200 relative h-80 overflow-hidden rounded-lg border">
-            {galleryItems[active] ? (
-              <img
-                src={galleryItems[active]}
-                alt={`Image ${active + 1}`}
-                className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-              />
-            ) : (
-              <div className="text-base-content/50 flex h-full w-full items-center justify-center">
-                No image
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          {galleryItems.map((src, i) => (
-            <button
-              key={i}
-              onClick={() => setActive(i)}
-              className={`focus:ring-primary overflow-hidden rounded-md border transition-all duration-200 hover:scale-105 focus:ring-2 focus:outline-none ${
-                i === active
-                  ? "border-primary ring-primary ring-1"
-                  : "border-base-300"
-              }`}
-            >
-              <img
-                src={src}
-                alt={`thumb ${i + 1}`}
-                className="h-20 w-full object-cover"
-              />
-            </button>
-          ))}
-        </div>
+      {/* Gallery with PhotoSwipe */}
+      <div className="mb-8">
+        <PropertyGallery images={galleryItems} />
       </div>
 
       {/* Layout */}

@@ -45,25 +45,23 @@ const PropertyCard = (props) => {
     const juta = 1_000_000;
     const miliar = 1_000_000_000;
 
-    // < 1 juta: show with regular grouping
     if (n < juta) {
       return n.toLocaleString("id-ID");
     }
 
-    // >= 1 miliar: show in miliar with up to 1 decimal (no trailing .0)
     if (n >= miliar) {
       const v = +(n / miliar).toFixed(1);
       return `${v % 1 === 0 ? v.toFixed(0) : v} miliar`;
     }
 
-    // >= 1 juta and < 1 miliar: show in juta
     const v = +(n / juta).toFixed(1);
     return `${v % 1 === 0 ? v.toFixed(0) : v} juta`;
   };
 
   return (
-    <div className="card bg-base-100 w-auto shadow-sm">
-      <figure className="flex max-h-64 w-full items-center justify-center overflow-hidden">
+    <div className="card bg-base-100 flex h-full w-full flex-col shadow-sm">
+      {/* Image container with fixed height and enforced fill */}
+      <figure className="bg-base-200 h-56 min-h-[14rem] w-full overflow-hidden">
         <Image
           src={
             image ||
@@ -73,70 +71,57 @@ const PropertyCard = (props) => {
           width={500}
           height={500}
           sizes="100vw"
-          className="h-auto max-h-64 w-full object-cover"
+          className="h-full w-full object-cover object-center transition-transform duration-300 hover:scale-105"
         />
       </figure>
 
-      <div className="card-body">
+      {/* Card body fills remaining space */}
+      <div className="card-body flex flex-grow flex-col">
         <div className="text-muted-foreground flex items-center gap-2 text-sm">
           <MapPinHouse className="flex-shrink-0" />
           {`${lokasi.area || "-"}, ${lokasi.kota || "-"}`}
         </div>
 
         <h1 className="card-title">{namaProperti}</h1>
-        <p className="text-muted-foreground text-sm">{deskripsi}</p>
+        <p className="text-muted-foreground line-clamp-2 text-sm">
+          {deskripsi}
+        </p>
 
         <div className="divider my-0" />
 
-        {/* Responsive grid: 2 cols on small, 3 on md and up */}
+        {/* Property details */}
         <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
           <div className="flex items-center gap-2">
-            <LandPlot size={18} className="flex-shrink-0" />
-            <span>LT {luasTanah} m²</span>
+            <LandPlot size={18} /> LT {luasTanah} m²
           </div>
-
           <div className="flex items-center gap-2">
-            <Building size={18} className="flex-shrink-0" />
-            <span>LB {luasBangunan} m²</span>
+            <Building size={18} /> LB {luasBangunan} m²
           </div>
-
           <div className="flex items-center gap-2">
-            <Calendar size={18} className="flex-shrink-0" />
-            <span>Tahun {tahunDibangun}</span>
+            <Calendar size={18} /> Tahun {tahunDibangun}
           </div>
-
           <div className="flex items-center gap-2">
-            <DoorClosed size={18} className="flex-shrink-0" />
-            <span>{jumlahKamar} Kamar Tidur</span>
+            <DoorClosed size={18} /> {jumlahKamar} Kamar Tidur
           </div>
-
           <div className="flex items-center gap-2">
-            <Bath size={18} className="flex-shrink-0" />
-            <span>{jumlahKamarMandi} Kamar Mandi</span>
+            <Bath size={18} /> {jumlahKamarMandi} Kamar Mandi
           </div>
-
           <div className="flex items-center gap-2">
-            <ShieldCheck size={18} className="flex-shrink-0" />
-            <span>{sertifikat}</span>
+            <ShieldCheck size={18} /> {sertifikat}
           </div>
-
           <div className="flex items-center gap-2">
-            <Zap size={18} className="flex-shrink-0" />
-            <span>{listrik}</span>
+            <Zap size={18} /> {listrik}
           </div>
-
           <div className="flex items-center gap-2">
-            <Droplet size={18} className="flex-shrink-0" />
-            <span>{air}</span>
+            <Droplet size={18} /> {air}
           </div>
-
           <div className="flex items-center gap-2">
-            <Banknote size={18} className="flex-shrink-0" />
-            <span className="break-words">Rp {formatRupiahUnit(harga)}</span>
+            <Banknote size={18} /> Rp {formatRupiahUnit(harga)}
           </div>
         </div>
 
-        <div className="card-actions mt-4 justify-center">
+        {/* Push buttons to bottom */}
+        <div className="card-actions mt-auto justify-center">
           {!session && (
             <Link
               href={`/properties/${_id}`}
@@ -163,12 +148,10 @@ const PropertyCard = (props) => {
                 <NotebookPen />
                 Edit
               </Link>
-
               <FeatureButton
                 propertyId={_id.toString()}
                 isFeatured={featured}
               />
-
               <DeleteButton
                 propertyId={_id.toString()}
                 propertyName={namaProperti}

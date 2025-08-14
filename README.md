@@ -70,10 +70,17 @@ Todo list
 
 ### **Footer**
 
-- [ ] Add website logo to footer
 - [x] Add social media links (Facebook, Instagram, Twitter, LinkedIn)
 - [x] Add social media icons next to links
 - [x] Style footer for responsiveness
+
+---
+
+### **Finishing Touches**
+
+- [x] Add the website logo to both the header and footer for consistent branding.
+- [x] Ensure all property cards maintain a uniform size, with images automatically adjusted—either scaled, zoomed, or center-cropped—while preserving aspect ratio.
+- [x] Refine the property details gallery for a more visually appealing and user-friendly presentation.
 
 Each house has:
 

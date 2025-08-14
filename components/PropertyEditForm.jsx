@@ -6,17 +6,23 @@ import updateProperty from "@/app/actions/updateProperty";
 const PropertyEditForm = ({ property }) => {
   const action = updateProperty.bind(null, property._id);
   const [replaceMain, setReplaceMain] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleMainChange(e) {
     const hasFiles = e?.target?.files?.length > 0;
     setReplaceMain(Boolean(hasFiles));
   }
 
+  function handleSubmit(e) {
+    // When form is submitted, set loading state
+    setIsSubmitting(true);
+  }
+
   return (
     <div className="mx-auto max-w-4xl p-6">
       <h1 className="mb-6 text-3xl font-bold">Edit Properti</h1>
 
-      <form className="space-y-6" action={action}>
+      <form className="space-y-6" action={action} onSubmit={handleSubmit}>
         {/* Hidden signal so server knows if main image is being replaced */}
         <input
           type="hidden"
@@ -355,8 +361,19 @@ const PropertyEditForm = ({ property }) => {
         </div>
 
         <div className="flex justify-end">
-          <button type="submit" className="btn btn-primary rounded-full">
-            Simpan Perubahan
+          <button
+            type="submit"
+            className="btn btn-primary rounded-full"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <span className="loading loading-spinner"></span>
+                Sedang menyimpan...
+              </>
+            ) : (
+              "Simpan Perubahan"
+            )}
           </button>
         </div>
       </form>
