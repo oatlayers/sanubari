@@ -1,94 +1,133 @@
+/* PropertyAddForm.jsx */
 "use client";
 
 import { useRef, useState } from "react";
-import addProperty from "@/app/actions/addProperty";
+import { useRouter } from "next/navigation";
 
 export default function PropertyAddForm() {
   const formRef = useRef(null);
   const [uploading, setUploading] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     const form = formRef.current;
     if (!form) return;
 
     const formData = new FormData(form);
+
+    // Grab file entries for images
     const fileEntries = formData.getAll("images").filter((f) => f && f.name);
 
     try {
       setUploading(true);
 
-      if (fileEntries.length === 0) {
-        const finalFormData = new FormData(form);
-        await addProperty(finalFormData);
-        // If addProperty calls redirect, control will not reach here.
-        return;
-      }
-
-      const sigRes = await fetch("/api/cloudinary-signature", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ folder: "sanubari" }),
-      });
-
-      if (!sigRes.ok) throw new Error("Failed to get upload signature");
-
-      const sigJson = await sigRes.json();
-      const { signature, timestamp, folder, api_key } = sigJson;
-
-      if (!signature || !timestamp)
-        throw new Error("Invalid signature response");
-
-      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-      if (!cloudName) throw new Error("Missing Cloudinary cloud name");
-
       const uploadedUrls = [];
 
-      for (const file of fileEntries) {
-        const fd = new FormData();
-        fd.append("file", file);
-        fd.append("api_key", api_key);
-        fd.append("timestamp", timestamp);
-        fd.append("signature", signature);
-        fd.append("folder", folder);
+      if (fileEntries.length > 0) {
+        // Get signature from your server (same as you had)
+        const sigRes = await fetch("/api/cloudinary-signature", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ folder: "sanubari" }),
+        });
 
-        const uploadRes = await fetch(
-          `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
-          {
-            method: "POST",
-            body: fd,
-          },
-        );
-
-        if (!uploadRes.ok) {
-          const txt = await uploadRes.text().catch(() => "");
-          throw new Error("Cloudinary upload failed: " + txt);
+        if (!sigRes.ok) {
+          throw new Error("Failed to get upload signature");
         }
 
-        const uploadJson = await uploadRes.json();
-        if (!uploadJson.secure_url)
-          throw new Error("No secure_url from Cloudinary");
+        const sigJson = await sigRes.json();
+        const { signature, timestamp, folder, api_key } = sigJson;
 
-        uploadedUrls.push(uploadJson.secure_url);
+        if (!signature || !timestamp) {
+          throw new Error("Invalid signature response");
+        }
+
+        const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+        if (!cloudName) throw new Error("Missing Cloudinary cloud name");
+
+        for (const file of fileEntries) {
+          const fd = new FormData();
+          fd.append("file", file);
+          fd.append("api_key", api_key);
+          fd.append("timestamp", timestamp);
+          fd.append("signature", signature);
+          fd.append("folder", folder);
+
+          const uploadRes = await fetch(
+            `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
+            {
+              method: "POST",
+              body: fd,
+            },
+          );
+
+          if (!uploadRes.ok) {
+            const txt = await uploadRes.text().catch(() => "");
+            throw new Error("Cloudinary upload failed: " + txt);
+          }
+
+          const uploadJson = await uploadRes.json();
+          if (!uploadJson.secure_url)
+            throw new Error("No secure_url from Cloudinary");
+
+          uploadedUrls.push(uploadJson.secure_url);
+        }
       }
 
-      const finalFormData = new FormData(form);
-      finalFormData.delete("images");
-      uploadedUrls.forEach((url) => finalFormData.append("images", url));
+      // Build a plain object payload from the form fields
+      const payload = {
+        namaProperti: formData.get("namaProperti") || "",
+        images: uploadedUrls, // first is main image, rest are gallery
+        video: formData.get("video") || "",
+        lokasi: {
+          area: formData.get("area") || "",
+          kota: formData.get("kota") || "",
+          provinsi: formData.get("provinsi") || "",
+          alamatLengkap: formData.get("alamatLengkap") || "",
+        },
+        jumlahKamar: Number(formData.get("jumlahKamar") || 1),
+        jumlahKamarMandi: Number(formData.get("jumlahKamarMandi") || 1),
+        jumlahLantai: Number(formData.get("jumlahLantai") || 1),
+        luasTanah: Number(formData.get("luasTanah") || 1),
+        luasBangunan: Number(formData.get("luasBangunan") || 1),
+        tahunDibangun: Number(
+          formData.get("tahunDibangun") || new Date().getFullYear(),
+        ),
+        sertifikat: formData.get("sertifikat") || "",
+        arahBangunan: formData.get("arahBangunan") || "",
+        listrik: formData.get("listrik") || "",
+        air: formData.get("air") || "",
+        harga: Number(formData.get("harga") || 1),
+        mataUang: "IDR",
+        tipeProperti: formData.get("tipeProperti") || "",
+        tipeListing: formData.get("tipeListing") || "",
+        status: formData.get("status") || "Tersedia",
+        furnished: formData.get("furnished") || "",
+        deskripsi: formData.get("deskripsi") || "",
+        fasilitas: formData.getAll("fasilitas") || [],
+      };
 
-      await addProperty(finalFormData);
-      // If addProperty calls redirect, control will not reach here.
+      // POST JSON to your API route
+      const res = await fetch("/api/properties", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        throw new Error("Save failed: " + txt);
+      }
+
+      const json = await res.json();
+      if (!json?.id) {
+        throw new Error("Missing response id");
+      }
+
+      // Go to property page
+      router.push(`/properties/${json.id}`);
     } catch (error) {
-      // IMPORTANT: allow Next.js redirect to proceed
-      if (
-        error?.digest === "NEXT_REDIRECT" ||
-        (typeof error?.message === "string" &&
-          error.message.includes("NEXT_REDIRECT"))
-      ) {
-        throw error;
-      }
-
       console.error("❌ Upload/save failed:", error);
       alert("Upload/save failed: " + (error.message || error));
     } finally {
@@ -102,7 +141,6 @@ export default function PropertyAddForm() {
 
       <form
         ref={formRef}
-        action={addProperty}
         className="space-y-6"
         onSubmit={handleSubmit}
         aria-busy={uploading}
