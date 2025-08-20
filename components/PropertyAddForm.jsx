@@ -450,6 +450,7 @@ export default function PropertyAddForm() {
               "Keamanan 24 Jam",
               "Taman Pribadi",
               "Gym",
+              "Carport",
               "Ruang Home Theater",
               "Taman Belakang",
               "Rooftop Garden",
